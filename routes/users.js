@@ -4,10 +4,11 @@ var users = require('../models/users');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var authenticate = require('../authenticate');
+var cors = require('./cors');
 
 router.use(bodyParser.json());
 /* GET users listing. */
-router.get('/', authenticate.verifyUser, authenticate.verifyAdmin, function(req, res, next) {
+router.get('/',cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, function(req, res, next) {
   users.find({})
   .then((users) => {
     res.statusCode = 200;
@@ -18,7 +19,7 @@ router.get('/', authenticate.verifyUser, authenticate.verifyAdmin, function(req,
 
 });
 
-router.post('/signup', (req, res, next) => {
+router.post('/signup', cors.corsWithOptions, (req, res, next) => {
   users.register(new users({username: req.body.username}), req.body.password, (err, user) => {
     if(err){
       res.statusCode = 500;
@@ -52,7 +53,7 @@ router.post('/signup', (req, res, next) => {
   });
 });
 
-router.post('/login', passport.authenticate('local'), (req, res) => {
+router.post('/login', passport.authenticate('local'), cors.corsWithOptions, (req, res) => {
   var token = authenticate.getToken({_id: req.user._id});
   res.statusCode = 200;
   res.setHeader('Content-Type', 'application/json');
