@@ -14,6 +14,9 @@ const userSchema = new schema({
     admin: {
         type: Boolean,
         default: false
+    },
+    facebookId: {
+        type: String
     }
 },{
     timestamps: true
